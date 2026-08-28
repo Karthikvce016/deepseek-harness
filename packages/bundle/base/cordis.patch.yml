@@ -97,16 +97,6 @@
     - id: credentials
       name: '@deepseek-ai/dsh-credentials-local'
 
-    # The pi-ai multi-provider twin, mounted dormant: zero routes (and no extra
-    # models in the picker) until a `llm-pi-ai:` settings section supplies provider
-    # profiles — then those routes register live, keys resolving per request
-    # through their apiKeyEnv references, and drop again when the section empties.
-    # Supplying those profiles is exactly what the web Models page does. Which
-    # adapters exist is composition; which providers run is the user's settings
-    # document.
-    - id: llm-pi-ai
-      name: '@deepseek-ai/dsh-llm-pi-ai'
-
     - id: session-persistence-jsonl
       name: '@deepseek-ai/dsh-session-persistence-jsonl'
       config:
@@ -437,26 +427,13 @@
         thresholds: [3, 5, 8]
         argumentsPreviewChars: 500
 
-    # Every mode enables the stable model-facing web_search tool. The Web app's
-    # per-agent presets additionally enable web_fetch; other products opt in by
-    # overriding tool-web. DeepSeek search resolves the same DEEPSEEK_API_KEY
-    # credential the Models page manages for chat, at each search; its Messages
-    # endpoint is separate from the chat-completions endpoint, so it takes its own
-    # base-URL override. Anonymous fetch accepts only public HTTP(S) destinations,
-    # resolves and validates every destination, and pins every actual connection.
-    # Search is a full auxiliary model request with server-side retrieval, so this
-    # shipped DeepSeek route gets 60s while the provider-neutral tool default
-    # remains 30s.
+    # Every mode enables the model-facing web_fetch tool through tool-web. Anonymous
+    # fetch accepts only public HTTP(S) destinations, resolves and validates every
+    # destination, and pins every actual connection.
     - id: web
       name: '@deepseek-ai/dsh-web'
       config:
-        searchProvider: deepseek-official
         fetchProvider: http
-
-    - id: web-search-deepseek
-      name: '@deepseek-ai/dsh-web-search-deepseek'
-      config:
-        apiKeyEnv: DEEPSEEK_API_KEY
 
     - id: web-fetch-http
       name: '@deepseek-ai/dsh-web-fetch-http'
@@ -464,8 +441,8 @@
     - id: tool-web
       name: '@deepseek-ai/dsh-tool-web'
       config:
+        search: false
         fetch: false
-        searchTimeoutMs: 60000
 
     # ── rows every mode mounts, whose values each overlay may state ──────────────
 

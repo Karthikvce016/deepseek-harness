@@ -41,12 +41,16 @@ describe('dsh-base bundle', () => {
     })
     expect(rows.filter(row => row.id === 'subagent-codex')).toHaveLength(0)
     expect(rows.filter(row => row.id === 'subagent-claude-code')).toHaveLength(0)
+    expect(rows.filter(row => row.id === 'llm-pi-ai')).toHaveLength(0)
     expect(rows.find(row => row.id === 'web')?.config).toMatchObject({ fetchProvider: 'http' })
+    expect(rows.filter(row => row.id === 'web-search-deepseek')).toHaveLength(0)
     expect(rows.find(row => row.id === 'web-fetch-http')).toBeDefined()
-    expect(rows.find(row => row.id === 'tool-web')?.config).toMatchObject({ fetch: false })
+    expect(rows.find(row => row.id === 'tool-web')?.config).toMatchObject({ search: false, fetch: false })
     expect(manifest.dependencies).not.toHaveProperty('@deepseek-ai/dsh-subagent-codex')
     expect(manifest.dependencies).not.toHaveProperty('@deepseek-ai/dsh-subagent-claude-code')
+    expect(manifest.dependencies).not.toHaveProperty('@deepseek-ai/dsh-llm-pi-ai')
     expect(manifest.dependencies).toHaveProperty('@deepseek-ai/dsh-web-fetch-http')
+    expect(manifest.dependencies).not.toHaveProperty('@deepseek-ai/dsh-web-search-deepseek')
   })
 
   it('gates each shell stack by platform with a symmetric disabled expression', () => {
